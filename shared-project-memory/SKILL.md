@@ -1,23 +1,27 @@
 ---
 name: shared-project-memory
-description: Set up or maintain shared file-based project memory for Claude Code and Codex, including project onboarding, existing-rule migration, checkpoints, worktree handoffs, and lifecycle hooks. Use when asked to share agent progress or adopt this memory mechanism in a project.
+description: Set up or maintain shared file-based project memory for Claude Code and Codex, including project onboarding, existing-rule migration, checkpoints, worktree handoffs, and lifecycle hooks. Use when asked to install this skill, enable persistent project memory, share agent progress, or adopt this mechanism in a project, including single-provider use.
 ---
 
 # Shared project memory
 
 Use the bundled Python tool to keep one canonical memory store per workspace and stable IDs per project. The tool records semantic checkpoints, entity revisions and incomplete observations. It does not synchronize raw chat transcripts, execute historical next steps, or establish that deployed code is healthy.
 
-## Set up a project
+## Install means complete setup
 
-Read its existing instructions and the user's authorized scope first. Locate this skill's `scripts/` directory; never assume the skill was installed under a particular user's home.
+A request to install/use this memory mechanism in the current or named project means end-to-end setup: skill availability, project onboarding, canonical rule migration, user runtime/hooks configuration, local write/read verification and a source-audited progress checkpoint. Do not end at copying skill files or a dry-run, and do not ask the user to repeat “initialize” after they requested installation. An explicit “download/copy only; do not change project or hooks” limits that scope.
 
-Run `python3 <skill>/scripts/onboard.py --repo <project> --dry-run` to inspect the proposed onboarding. Then run the same command without `--dry-run` within the user's requested setup scope. For a child project sharing an existing parent store, add `--workspace <parent>`. A non-Git folder can be a project. Ordinary reference/output folders can inherit the parent's memory instead of getting their own ID.
+A generic skill installer does not automatically execute this file or scripts. If you are handling installation, read this SKILL.md immediately after copying and continue setup in the same turn. If loading it in a later session, check project metadata and complete pending setup within the user's existing authorization; do not install into unrelated projects merely because the skill is discoverable.
 
-The helper preserves existing canonical filename case. If AGENTS.md exists, inspect it before using `--adopt-existing-agents`: this backs up and migrates its content before replacing it with a pointer. When both instruction files contain rules, reconcile conflicts with the user's instructions; the helper preserves both texts but cannot decide their meaning. Reverse imports or ambiguous canonical files require manual reconciliation before onboarding.
+Locate this skill's scripts directory; do not assume a home path. Read project instructions and inspect the requested scope. Reconcile actual contradictions in existing rules before migration, preserving user instructions and both original texts. Do not treat the existence of AGENTS.md as a reason to stop for another confirmation. The helper preserves filename case and backs up originals; reverse imports or ambiguous canonical files require reconciliation first.
 
-Global hook installation is a separate scope: use `python3 <skill>/scripts/memoryctl install-user --workspace <canonical-workspace> --dry-run`, then apply after authorization covers those user-level files. It merges unrelated settings and retains backups. Installing a downloaded skill alone does **not** install hooks. Do not bypass Codex hook trust or edit the trust database; the user reviews installed definitions through the supported hook review surface.
+Run `python3 <skill>/scripts/setup.py --repo <project> --dry-run`, then apply without `--dry-run`. After reading AGENTS.md, add `--adopt-existing-agents` when necessary. Add `--workspace <parent>` for a child sharing the owning store. This command installs both provider skill folders, onboards, installs/merges user runtime and hooks, runs the installed CLI, writes and reads a verification checkpoint, then checks doctor. Repeated setup retains identity, rules and unrelated settings. Use the host's normal approval mechanism if filesystem permissions require it; no extra permission conversation for steps already covered by the installation request.
 
-Use [setup.md](references/setup.md) for installation, existing-rule migration and cross-project use. Use [operations.md](references/operations.md) for checkpoints, conflicts, ownership and recovery. Use [validation.md](references/validation.md) to test real lifecycle dispatch.
+After setup, audit project source documents and save a real progress checkpoint with provenance. This is part of installation; the helper's setup marker is not a historical-progress import. Preserve existing memory rather than re-importing it. Ordinary reference folders can inherit parent memory. A non-Git folder can be a project. A single provider can use the mechanism without a second account/tool.
+
+Do not bypass provider hook trust or edit its trust database. Complete all permitted work first; report only the concrete trust/fresh-session action still needed. Separate `local write/read verified`, `hooks configured`, and `actual lifecycle dispatch verified`; do not claim fully automatic hooks solely from setup checks. Skill files alone have no install-time execution trigger.
+
+Use [setup.md](references/setup.md) for detailed migration and cross-project use, [operations.md](references/operations.md) for memory operations, and [validation.md](references/validation.md) for real lifecycle verification.
 
 ## Work and hand off
 

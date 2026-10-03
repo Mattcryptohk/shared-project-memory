@@ -4,7 +4,7 @@
 
 Agent 開始工作時讀取同一份記憶；完成有意義的步驟時提交 checkpoint；另一個 agent 接手時，從持久化紀錄了解已完成事項、證據、阻礙與下一步。
 
-本 repo 提供機制及安裝流程。**安裝 Skill、初始化專案、安裝全域 hooks 是三個不同步驟**；只下載 Skill 並不會立即啟用 hooks。
+本 repo 提供機制及安裝流程。**預設安裝會一次完成 Skill、專案初始化、全域 hooks 配置及本機讀寫驗證**。單純下載／複製檔案沒有自動執行能力；請使用下方 setup 指令，或要求 agent 安裝本機制。平台要求的 hook trust 審閱仍由使用者完成。
 
 ## 目錄
 
@@ -54,6 +54,8 @@ Agent 開始工作時讀取同一份記憶；完成有意義的步驟時提交 c
 - 使用自動 hooks 時，需有支援相關 lifecycle events 的 Claude Code／Codex runtime。
 - 從 Private GitHub repo 下載時，帳戶需有讀取權限。
 
+單一 AI provider 也可保存進度；已保存記憶不依賴原 AI 帳戶，換帳戶／工具時仍可讀取。本機資料需自行備份，未保存的工作與完整聊天不會自動恢復。
+
 目前使用本機 `fcntl` file locks；Windows 與跨機同時寫入尚未支援。
 
 ## 快速開始
@@ -67,7 +69,26 @@ cd shared-project-memory
 
 也可以從 GitHub 下載 ZIP。以下指令均假設目前位於此 repo 根目錄；請將範例路徑換成自己的實際路徑。包含空格的路徑必須加引號。
 
-### 2. 讓 agent 使用 Skill
+### 2. 一條指令完成安裝與初始化（建議）
+
+```bash
+python3 shared-project-memory/scripts/setup.py \
+  --repo "/absolute/path/to/project"
+```
+
+這條指令會安裝 Claude／Codex Skill、保留規則並初始化專案、安裝或合併全域 runtime／hooks，最後實際保存及讀回驗證 checkpoint，執行 doctor。可先加 `--dry-run` 預覽；正式安裝不需逐步重複呼叫其他工具。
+
+已有 AGENTS.md 時，agent 先讀取及整合規則，再加 `--adopt-existing-agents`；子專案加 `--workspace "/absolute/workspace"`。helper 不會自動判斷互相矛盾的規則。更新已安裝 Skill 前會備份被修改的檔案，保留其他檔案與既有 symlink（限使用者目錄內）。
+
+亦可以直接要求 agent：
+
+> 請從這個 repo 安裝 shared-project-memory 到目前專案，完成規則整合、記憶初始化、hooks 配置及本機讀寫驗證，並根據實際文件保存進度。不要只複製 skill 或停在預覽。
+
+Agent 處理安裝時應讀取 SKILL.md，完成整套 setup，無需使用者再次提出「初始化」。單純由通用 skill installer 複製檔案，若它沒有讀取並執行此流程，仍不會自動初始化；Skill 格式本身沒有 post-install 執行觸發。
+
+下列分步指令供檢查、遷移或手動操作使用；已跑完整 setup 者不用重做。
+
+### 3. 讓 agent 使用 Skill
 
 Skill 位於 [`shared-project-memory/SKILL.md`](shared-project-memory/SKILL.md)。可以直接將此檔案的絕對路徑交給 agent，要求它依照流程接入專案。
 
@@ -84,7 +105,7 @@ Skill 位於 [`shared-project-memory/SKILL.md`](shared-project-memory/SKILL.md)�
 
 > 請使用 shared-project-memory Skill 將目前專案接入 Claude Code／Codex 共用記憶。先讀取並保留既有規則，預覽初始化變更，根據實際來源匯入進度；如果尚未安裝全域 hooks，完成安裝及驗證。
 
-### 3. 初始化專案
+### 4. 初始化專案（分步操作）
 
 對沒有既有 `AGENTS.md` 的專案，先預覽，再執行：
 
@@ -100,7 +121,7 @@ python3 shared-project-memory/scripts/onboard.py \
 
 同一身份的專案重複 onboarding 會回報已註冊，不會再次匯入歷史進度。專案資料夾必須已存在；工具不會自行建立 Git repo。
 
-### 4. 安裝全域 runtime 與 hooks
+### 5. 安裝全域 runtime 與 hooks（分步操作）
 
 每部電腦首次使用時：
 
@@ -116,7 +137,7 @@ python3 shared-project-memory/scripts/memoryctl install-user \
 
 Codex 需要審閱並 trust 新增的 hooks。CLI 可使用 `/hooks`；核對來源與 command 後完成審閱，再開啟新 session。修改 hook 定義後也可能需要重新審閱。Claude 設定完成後，同樣應在新 session 驗證實際觸發。
 
-### 5. 檢查與首次交接
+### 6. 檢查與首次交接
 
 ```bash
 python3 ~/.local/share/shared-project-memory/memoryctl context \
@@ -255,6 +276,7 @@ Task claims 是合作式協調，不能防止其他程序修改檔案。claim �
     ├── agents/openai.yaml
     ├── references/
     └── scripts/
+        ├── setup.py
         ├── onboard.py
         ├── memoryctl
         └── project_memory/
@@ -287,7 +309,7 @@ python3 -m unittest discover \
   -s shared-project-memory/scripts/project_memory/tests -v
 ```
 
-目前包含 27 項測試，涵蓋並行 writer、revision 衝突及解決、去重、中斷後重建、Git worktrees、只讀 checkpoint、漏存提醒次數上限、規則保留、重複安裝、子專案 routing 及 ID 衝突。
+目前包含 31 項測試，涵蓋並行 writer、revision 衝突及解決、去重、中斷後重建、Git worktrees、只讀 checkpoint、漏存提醒次數上限、規則保留、重複安裝、子專案 routing 及 ID 衝突。
 
 `PACKAGE-MANIFEST.json` 提供可發佈來源檔案的 SHA-256。修改來源後，應重新產生 manifest；它不包含自己或 Git metadata。
 

@@ -1,15 +1,15 @@
 {
   "format_version": 1,
   "package": "shared-project-memory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "runtime_origin": "tested-local-runtime-snapshot",
   "sha256": {
     ".gitignore": "60c9bdd905fcf45ac485c680d32e9773962cf061b6f041dcddd033911558a672",
-    "README.md": "1ecd8412d5e49609e582baa292ed76175cb6e8bd71f5621de4f3ef4ad3e734aa",
-    "shared-project-memory/SKILL.md": "6887e85a2d65bf062b10b102def0ebf4304a7459e0a3fae9dfdde47bde6df9b0",
+    "README.md": "469b20501716b251ad2637d1535829b0c6b59f2d84d0116c5f4586a4b7b40643",
+    "shared-project-memory/SKILL.md": "9e167957b47da55efd01b48b7fd20d5c09023da8a54eb7cead46445cbaf0e8c7",
     "shared-project-memory/agents/openai.yaml": "d76a5bb974ee4c5e3d7c2df734b0c09827448339f7912f05c8850dd6e4a44f76",
     "shared-project-memory/references/operations.md": "3f14f71b9b458a296538afbad17b52bff81aa4410c0075d8a88a00bed762f304",
-    "shared-project-memory/references/setup.md": "0803e296aca4c8ee2374234ab87e5544a5be599095b9dea116c89864826d18ec",
+    "shared-project-memory/references/setup.md": "7372e87a5fee07ae293a96661068e02d45f7dec01bab23cf3fe9f44371a8828d",
     "shared-project-memory/references/validation.md": "def61c56063b0a4dfb26c72760e5b591c56ec43fc323b5cc484dafb880754fa3",
     "shared-project-memory/scripts/memoryctl": "51cb8d49f7221c993632d756e935872887e1a3dc79ccfdc4d7559c0d7af6c945",
     "shared-project-memory/scripts/onboard.py": "330d6c1037dc559c57c31ca47ba417df9859ab329d94ba5ac5d496b9eec435e5",
@@ -23,6 +23,8 @@
     "shared-project-memory/scripts/project_memory/schema.py": "8751d4c4a08e1d4ef51368616f539f4c8b1e52de2c02ec00de065e94c993c358",
     "shared-project-memory/scripts/project_memory/store.py": "61453f9110104551b673a9e9167d3655d526255ac649517638987b6a4329020e",
     "shared-project-memory/scripts/project_memory/tests/test_memory.py": "439332922b45bc268bdf5a16f94e68e0af6f740f64a7933338d8f21ce0ada158",
-    "shared-project-memory/scripts/project_memory/tests/test_onboard.py": "c3be7bd996ecd5cd3842154f18b98aef6f90ddd9c6f2a98874599c6082853d54"
+    "shared-project-memory/scripts/project_memory/tests/test_onboard.py": "c3be7bd996ecd5cd3842154f18b98aef6f90ddd9c6f2a98874599c6082853d54",
+    "shared-project-memory/scripts/project_memory/tests/test_setup.py": "b04a8a2d326ab9268288970f1d22ea8e6040564a7cb123684ba6617cc8d5a164",
+    "shared-project-memory/scripts/setup.py": "64071424121008c1b99aa028626894c5c6af76bab2c192596533f1a2e7c83b09"
   }
 }

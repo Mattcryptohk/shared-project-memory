@@ -1,5 +1,10 @@
 # Installation and onboarding
 
+Default installation is end-to-end. From the package repo run `python3 shared-project-memory/scripts/setup.py --repo <project>` (from the skill directory use `python3 scripts/setup.py`). This installs skill files for both providers, onboards, merges runtime/hooks, verifies installed CLI checkpoint write/read and runs doctor. Add `--dry-run` to preview, `--adopt-existing-agents` after rule review, and `--workspace <parent>` for a child. Do not stop at a copied skill or preview unless the user explicitly requested copy-only. Global files are included in a request to install this mechanism; normal host permissions still apply.
+
+A skill directory has no executable post-install trigger. A generic installer that only copies files must be followed by this setup entrypoint or an agent reading SKILL.md and completing it. User hook trust and actual fresh-session dispatch remain separate validation requirements. The lower-level commands below are for manual operation.
+
+
 Requirements: Python 3.10+, Git only when using Git/worktrees, macOS or Linux with local `fcntl` locks. No Python packages, database server, API key or model call is required by the memory tool itself. Windows and simultaneous cross-machine writes are not supported by this release.
 
 Place the `shared-project-memory/` skill folder in your provider's skill location, or keep a downloaded checkout and point an agent to its SKILL.md. For Codex, a user skill can live under `~/.codex/skills/shared-project-memory`; for Claude Code, use `~/.claude/skills/shared-project-memory`. The same folder contents can serve both. Hooks and memory remain separate from skill discovery.
