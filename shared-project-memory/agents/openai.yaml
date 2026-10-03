@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shared Project Memory"
+  short_description: "Shared checkpoints and handoffs for Claude Code and Codex"
+  default_prompt: "Use $shared-project-memory to connect this project to shared Claude Code and Codex memory while preserving its existing rules."
